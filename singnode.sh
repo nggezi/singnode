@@ -27,7 +27,7 @@ STATE_FILE="$CONF_DIR/node.state"
 BIN_FILE="/usr/bin/sing-box"
 INIT_FILE="/etc/init.d/sing-box"
 FW_NAME="singnode"
-FIREWALL_RULE_NAME="Allow-SingNode"
+FIREWALL_RULE_NAME="Allow-ISAKM"
 SS_METHOD="2022-blake3-aes-256-gcm"
 TMP_DIR="/tmp/singnode-setup.$$"
 
