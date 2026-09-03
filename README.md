@@ -1,14 +1,32 @@
-# sing-box OpenWrt 一键安装脚本
+# singnode - OpenWrt 一键安装 sing-box Shadowsocks-2022 服务端
 
 在 OpenWrt / ImmortalWrt / iStoreOS 等泛 OpenWrt 系列系统上，一键把 sing-box 装到路由器本体，创建一个 `shadowsocks 2022-blake3-aes-256-gcm` 服务端节点，放行 WAN 入站端口，并输出标准 `ss://` 链接。
 
-## 用法
+## 一键安装（拉取脚本并执行）
 
-上传 `singbox.sh` 到路由器后执行：
+在路由器上直接执行以下命令，会下载当前 `main` 分支的 `singnode.sh` 并开始安装。
+
+境外 / GitHub raw：
 
 ```sh
-sh singbox.sh            # 安装
-sh singbox.sh uninstall  # 卸载
+curl -fsSL -O https://raw.githubusercontent.com/nggezi/singnode/main/singnode.sh && sh singnode.sh
+```
+
+国内镜像（ghfast.top 代理 raw 地址）：
+
+```sh
+curl -fsSL -O https://ghfast.top/https://raw.githubusercontent.com/nggezi/singnode/main/singnode.sh && sh singnode.sh
+```
+
+镜像失效时，把命令里的 `ghfast.top` 换成 `gh-proxy.com`、`ghproxy.net` 等即可（与脚本内置的镜像列表一致）。下载完成后 `singnode.sh` 会留在当前目录，之后可直接 `sh singnode.sh uninstall` 一键卸载。
+
+## 用法
+
+上传 `singnode.sh` 到路由器后执行：
+
+```sh
+sh singnode.sh            # 安装
+sh singnode.sh uninstall  # 卸载
 ```
 
 脚本需要 root（OpenWrt 默认就是 root），依赖 `uci`、`tar`、`base64`，均为基础组件。若系统没有 curl，脚本会自动尝试 `opkg/apk install curl`，都没有则给出提示。
@@ -27,16 +45,16 @@ sh singbox.sh uninstall  # 卸载
 
 ```sh
 # 服务器有域名时用域名生成链接
-SINGBOX_DOMAIN=ss.example.com sh singbox.sh
+SINGBOX_DOMAIN=ss.example.com sh singnode.sh
 
 # 架构自动识别失败时手动指定（值参考官方资产名）
-SINGBOX_ARCH=armv7 sh singbox.sh
+SINGBOX_ARCH=armv7 sh singnode.sh
 
 # 手动指定 GitHub 加速镜像（默认内置 ghfast.top / gh-proxy.com / ghproxy.net / gh.llkk.cc / mirror.ghproxy.com）
-GH_MIRROR=https://gh-proxy.com sh singbox.sh
+GH_MIRROR=https://gh-proxy.com sh singnode.sh
 
 # 固定安装指定版本（默认自动取 GitHub 最新稳定版）
-SINGBOX_VERSION=1.13.14 sh singbox.sh
+SINGBOX_VERSION=1.13.14 sh singnode.sh
 ```
 
 ## 卸载行为
@@ -63,3 +81,4 @@ logread | grep sing-box        # 查看日志
 - 默认监听 `::`（IPv4/IPv6 双栈），链接按 IPv4 生成。想走 IPv6 或域名时设 `SINGBOX_DOMAIN`。
 - 2022-blake3 系列要求客户端使用原版 sing-box 系客户端或支持 shadowsocks 2022 的客户端（如 NekoBox / sing-box 内核），旧式 SS 客户端不兼容。
 - mips/mipsel 路由器默认选软浮点资产；若你的设备确实带 FPU 且运行报非法指令，可用 `SINGBOX_ARCH=mipsle` 等强制重装。
+- 本项目/脚本名为 **singnode**；sing-box 是上游软件名，系统中的二进制、配置目录与开机服务仍沿用 `/usr/bin/sing-box`、`/etc/sing-box`、`/etc/init.d/sing-box`。

@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# singbox.sh - OpenWrt(泛) 一键安装/卸载 sing-box Shadowsocks-2022 服务端
+# singnode.sh - OpenWrt(泛) 一键安装/卸载 sing-box Shadowsocks-2022 服务端
 #
 # 用法:
-#   sh singbox.sh           # 安装/更新 sing-box 并输出 ss:// 链接
-#   sh singbox.sh uninstall # 一键卸载
+#   sh singnode.sh           # 安装/更新 sing-box 并输出 ss:// 链接
+#   sh singnode.sh uninstall # 一键卸载
 #
 # 可选环境变量:
 #   SINGBOX_DOMAIN=example.com   用域名生成链接(路由器有域名时推荐)
@@ -26,10 +26,10 @@ CONF_FILE="$CONF_DIR/config.json"
 STATE_FILE="$CONF_DIR/node.state"
 BIN_FILE="/usr/bin/sing-box"
 INIT_FILE="/etc/init.d/sing-box"
-FW_NAME="singbox"
-FIREWALL_RULE_NAME="Allow-Sing-Box"
+FW_NAME="singnode"
+FIREWALL_RULE_NAME="Allow-SingNode"
 SS_METHOD="2022-blake3-aes-256-gcm"
-TMP_DIR="/tmp/singbox-setup.$$"
+TMP_DIR="/tmp/singnode-setup.$$"
 
 log_info() { printf '[INFO] %s\n' "$*"; }
 log_ok()   { printf '[ OK ] %s\n' "$*"; }
@@ -269,7 +269,7 @@ fetch_and_extract() {
   candidates=$(asset_candidates)
   bases=$(gh_base_list)
   mkdir -p "$TMP_DIR"
-  tarball="$TMP_DIR/singbox.tar.gz"
+  tarball="$TMP_DIR/singnode.tar.gz"
   for base in $bases; do
     for cand in $candidates; do
       if download_asset "$ver" "$cand" "$base" "$tarball"; then
@@ -460,7 +460,7 @@ detect_host() {
 
 print_link() {
   local link
-  link="ss://$SS_METHOD:$PASSWORD@$HOST:$PORT#sing-box-ss2022"
+  link="ss://$SS_METHOD:$PASSWORD@$HOST:$PORT#singnode"
   echo
   echo "================================================================"
   log_ok "客户端连接信息:"
@@ -517,11 +517,11 @@ uninstall_main() {
 
 usage() {
   cat <<EOF
-singbox.sh - OpenWrt 一键安装/卸载 sing-box Shadowsocks-2022 服务端
+singnode.sh - OpenWrt 一键安装/卸载 sing-box Shadowsocks-2022 服务端
 
 用法:
-  sh singbox.sh           安装(或更新)sing-box 并输出 ss:// 链接
-  sh singbox.sh uninstall 卸载
+  sh singnode.sh           安装(或更新)sing-box 并输出 ss:// 链接
+  sh singnode.sh uninstall 卸载
 
 可选环境变量:
   SINGBOX_DOMAIN=example.com   使用域名而非公网 IP 生成链接
